@@ -4,11 +4,13 @@ import org.example.entity.OrderEntity;
 import org.example.entity.OrderProductEntity;
 import org.example.entity.ProductEntity;
 import org.example.model.OrderItem;
+import org.example.model.OrderProductItem;
+import org.example.model.ProductItem;
 import org.example.repository.OrderRepository;
-import org.example.repository.ProductRepository;
-
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -18,15 +20,13 @@ public class OrderService {
     private final ClientService clientService;
     private final ProductService productService;
     private final OrderRepository orderRepository;
-    private final OrderProductsService orderProductsService;
-    private final ProductRepository productRepository;
+    private final OrderProductService orderProductService;
 
     public OrderService() {
         this.productService = new ProductService();
         this.clientService = new ClientService();
         this.orderRepository = new OrderRepository();
-        this.orderProductsService = new OrderProductsService();
-        this.productRepository = new ProductRepository();
+        this.orderProductService = new OrderProductService();
     }
 
     public void createOrder(long clientId, List<OrderItem> orderItemList) {
@@ -46,9 +46,46 @@ public class OrderService {
                         orderItem.getCount()
                 );
 
-                orderProductsService.saveOrderItem(orderProductEntity);
+                orderProductService.saveOrderItem(orderProductEntity);
                 updateProductCount(orderProductEntity, productService.findProduct(orderProductEntity.getProductId()));
             }); //2 -> insert all order items to order_product
+        }
+    }
+
+    public List<OrderProductItem> getAllOrders() {
+        List<OrderProductEntity> orderProductEntities = orderProductService.findAll();
+        Map<Long, List<ProductItem>> ordersMap = new HashMap<>();
+        for (OrderProductEntity orderProduct : orderProductEntities) {
+            if (!ordersMap.containsKey(orderProduct.getOrderId())) {
+                List<ProductItem> items = new ArrayList<>();
+                items.add(
+                        new ProductItem(
+                                productService.getProductName(orderProduct.getProductId()),
+                                orderProduct.getCount()
+                        )
+                );
+                ordersMap.put(orderProduct.getOrderId(), items);
+            } else {
+                ordersMap.get(orderProduct.getOrderId()).add(
+                        new ProductItem(
+                                productService.getProductName(orderProduct.getProductId()),
+                                orderProduct.getCount()
+                        )
+                );
+            }
+        }
+
+        List<OrderProductItem> allOrdersList = new ArrayList<>();
+        for (Map.Entry<Long, List<ProductItem>> map : ordersMap.entrySet()) {
+            allOrdersList.add(new OrderProductItem(map.getKey(), map.getValue()));
+        }
+        return allOrdersList;
+    }
+    public void deleteOrder(long orderId){
+        if (!orderRepository.existOrderById(orderId)){
+            System.err.println("Order not exist");
+        }else {
+            orderRepository.deleteOrderById(orderId);
         }
     }
 
@@ -89,7 +126,7 @@ public class OrderService {
     }
 
     private void updateProductCount(OrderProductEntity orderProductEntity, ProductEntity productEntity) {
-        long newProductCount = productEntity.getCount() - orderProductEntity.getCount();
-        productService.updateCount(productEntity.getId(), newProductCount);
+        Long newProductCount = productEntity.getCount() - orderProductEntity.getCount();
+        productService.update(productEntity.getId(), null, newProductCount, null);
     }
 }

@@ -1,15 +1,15 @@
 package org.example.repository;
 
-import org.example.entity.ClientEntity;
 import org.example.entity.ProductEntity;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductRepository extends BaseRepository {
-    public void saveProduct(String name, long count, double price) {
+    public void saveProduct(String name, long count, BigDecimal price) {
         try {
             getStatement().execute(
                     "INSERT INTO public.product(name, count, price)" +
@@ -22,9 +22,20 @@ public class ProductRepository extends BaseRepository {
 
     public ProductEntity findProductById(long id) {
         try {
-           return mapToEntity(
-                    "SELECT FROM public.product WHERE id = " + id + ";"
+            return mapToEntity(
+                    "SELECT * FROM public.product WHERE id = " + id + ";"
             );
+        } catch (SQLException e) {
+            System.out.println("SQL exception occurred" + e);
+        }
+        return null;
+    }
+
+    public String findProductNameById(long id) {
+        try {
+            return mapToEntity(
+                    "SELECT * FROM public.product WHERE id = " + id + ";"
+            ).getName();
         } catch (SQLException e) {
             System.out.println("SQL exception occurred" + e);
         }
@@ -40,22 +51,14 @@ public class ProductRepository extends BaseRepository {
         return new ArrayList<>();
     }
 
-    public void changeProductById(long id, String name, long count, double price) {
+    public void changeProductById(ProductEntity productEntity) {
         try {
             getStatement().execute(
                     "UPDATE public.product " +
-                            "SET name = '" + name + "', count = " + count + ", price =" + price + "" +
-                            " WHERE id = " + id + ";"
-            );
-        } catch (SQLException e) {
-            System.out.println("SQL exception occurred" + e);
-        }
-    }
-
-    public void changeProductCount(long productId, long newProductCount) {
-        try {
-            getStatement().execute(
-                    "UPDATE public.product SET count = " + newProductCount + " WHERE id = " + productId + "; "
+                            "SET name = '" + productEntity.getName() + "'," +
+                            " count = " + productEntity.getCount() + "," +
+                            " price =" + productEntity.getPrice() + "" +
+                            " WHERE id = " + productEntity.getId() + ";"
             );
         } catch (SQLException e) {
             System.out.println("SQL exception occurred" + e);

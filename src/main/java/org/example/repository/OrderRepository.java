@@ -1,12 +1,8 @@
 package org.example.repository;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud;
-import org.example.entity.ClientEntity;
 import org.example.entity.OrderEntity;
-import org.example.model.OrderItem;
 
 import java.sql.*;
-import java.util.List;
 
 public class OrderRepository extends BaseRepository {
 
@@ -36,6 +32,27 @@ public class OrderRepository extends BaseRepository {
             System.out.println("SQL exception occurred" + e);
         }
         return null;
+    }
+    public void deleteOrderById(long id){
+        try{
+            getStatement().execute(
+                    "DELETE FROM orders WHERE id = '" + id + "';"
+            );
+        }catch(SQLException e){
+            System.out.println("SQL exception occurred" + e);
+        }
+    }
+    public boolean existOrderById(long id) {
+        try {
+            ResultSet rs = getStatement().executeQuery(
+                    "select count(1) from orders where id = '" + id + "';"
+            );
+            rs.next();
+            return rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.out.println("SQL exception occurred" + e);
+        }
+        return false;
     }
 
     private OrderEntity mapToEntity(String str) throws SQLException {

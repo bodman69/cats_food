@@ -7,6 +7,8 @@ import java.util.List;
 
 public class ClientService {
 
+    public static final String A = "\u001B[36m";
+    public static final String R = "\u001B[0m";
     private ClientRepository clientRepository;
 
     public ClientService() {
@@ -18,7 +20,7 @@ public class ClientService {
             System.err.println("Client with phone number " + A + phoneNumber + R + " already exist");
         } else {
             clientRepository.saveClient(name, phoneNumber);
-            System.out.println("Client " + A + name + " / " + phoneNumber + R + " successfully saved");
+            System.out.println("Client " + A + name + " : " + phoneNumber + R + " successfully saved");
         }
     }
 
@@ -26,14 +28,13 @@ public class ClientService {
         return clientRepository.findAllClients();
     }
 
-
-    public void update(long id, String newName, String phoneNumber) {
+    public void update(long id, String newName, String newPhoneNumber) {
         ClientEntity clientEntity = clientRepository.findClientById(id);
         if (newName != null && !newName.equals("")) {
             clientEntity.setName(newName);
         }
-        if (phoneNumber != null && !phoneNumber.equals("")) {
-            clientEntity.setPhoneNumber(phoneNumber);
+        if (newPhoneNumber != null && !newPhoneNumber.equals("")) {
+            clientEntity.setPhoneNumber(newPhoneNumber);
         }
         clientRepository.updateClient(clientEntity);
     }
@@ -49,7 +50,4 @@ public class ClientService {
     public boolean existByClientId(long clientId) {
         return clientRepository.existClientById(clientId);
     }
-
-    public static final String A = "\u001B[36m";
-    public static final String R = "\u001B[0m";
 }

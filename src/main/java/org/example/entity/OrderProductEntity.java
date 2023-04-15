@@ -1,13 +1,11 @@
 package org.example.entity;
 
-import org.example.model.OrderItem;
-
 public class OrderProductEntity {
     private long orderId;
     private long productId;
-    private long count;
+    private Long count;
 
-    public OrderProductEntity(long orderId, long productId, long count) {
+    public OrderProductEntity(long orderId, long productId, Long count) {
         this.orderId = orderId;
         this.productId = productId;
         this.count = count;
@@ -29,11 +27,11 @@ public class OrderProductEntity {
         this.productId = productId;
     }
 
-    public long getCount() {
+    public Long getCount() {
         return count;
     }
 
-    public void setCount(long count) {
+    public void setCount(Long count) {
         this.count = count;
     }
 }

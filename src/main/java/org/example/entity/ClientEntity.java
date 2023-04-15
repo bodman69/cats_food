@@ -15,28 +15,29 @@ public class ClientEntity {
         return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @Override
     public String toString() {
-        return "Client {" +
+        return "Client " +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
+                ", name = " + name +
+                ", phoneNumber = " + phoneNumber +
+                "\n" + "---------------------------------------------------------" + "\n"
+                ;
     }
 }

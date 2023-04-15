@@ -5,25 +5,13 @@ import java.math.BigDecimal;
 public class ProductEntity {
     private long id;
     private String name;
-    private long count;
+    private Long count;
     private BigDecimal price;
 
-    public ProductEntity(long id, String name, long count, BigDecimal price) {
+    public ProductEntity(long id, String name, Long count, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.count = count;
-        this.price = price;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCount(long count) {
-        this.count = count;
-    }
-
-    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -35,21 +23,31 @@ public class ProductEntity {
         return name;
     }
 
-    public long getCount() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getCount() {
         return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
-        return "Product {" +
-                "id=" + id +
+        return "Product id= " + id +
                 ", name='" + name + '\'' +
                 ", count=" + count +
-                ", price=" + price +
-                '}';
+                ", price=" + price +"\n"+"------------------------------------------------------------"+"\n";
     }
 }
