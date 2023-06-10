@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @Validated
@@ -25,18 +27,18 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<OrderModel> getAll(){
+    public List<OrderModel> getAll() {
         return orderService.getAllOrders();
     }
 
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         orderService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/orders/{id}")
-    public ResponseEntity<Void> updateOrder(@PathVariable Long id, @RequestBody OrderUpdateRequest orderUpdateRequest){
+    public ResponseEntity<Void> updateOrder(@PathVariable Long id, @RequestBody OrderUpdateRequest orderUpdateRequest) {
         orderService.updateOrder(id, orderUpdateRequest);
         return ResponseEntity.noContent().build();
     }

@@ -1,4 +1,5 @@
 package com.lesson.shop.model.request;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

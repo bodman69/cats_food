@@ -2,7 +2,6 @@ package com.lesson.shop.controller;
 
 import com.lesson.shop.model.entity.ClientEntity;
 import com.lesson.shop.model.request.ClientRequest;
-import com.lesson.shop.repository.ClientRepository;
 import com.lesson.shop.service.ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,9 @@ import java.util.List;
 @Validated
 public class ClientController {
     private final ClientService clientService;
+
     @PostMapping("/client")
-    public ResponseEntity<Void> create(@RequestBody @Valid ClientRequest request){
+    public ResponseEntity<Void> create(@RequestBody @Valid ClientRequest request) {
         clientService.create(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -32,12 +32,12 @@ public class ClientController {
     }
 
     @PutMapping("/client/{id}")
-    public void update(@PathVariable Long id, @RequestBody @Valid ClientRequest request){
+    public void update(@PathVariable Long id, @RequestBody @Valid ClientRequest request) {
         clientService.update(id, request);
     }
 
     @DeleteMapping("/client/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         clientService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

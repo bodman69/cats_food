@@ -33,7 +33,7 @@ public class OrderService {
     private final ClientService clientService;
     private final ProductService productService;
 
-
+    @Transactional
     public void create(OrderRequest request) {
         List<ProductEntity> products = productService.findAllByIds(
                 request.getProducts().stream()
@@ -45,7 +45,6 @@ public class OrderService {
         OrderEntity orderEntity = createOrder(request, products);
         createOrderProducts(request, orderEntity);
         updateProductCount(request, products);
-
     }
 
     public List<OrderModel> getAllOrders() {

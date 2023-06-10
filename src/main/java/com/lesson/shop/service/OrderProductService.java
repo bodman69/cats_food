@@ -17,7 +17,7 @@ public class OrderProductService {
         orderProductRepository.saveAll(orderProductEntityList);
     }
 
-    public void deleteOrderProduct (Long id){
+    public void deleteOrderProduct(Long id) {
         orderProductRepository.deleteByOrderId(id);
     }
 }

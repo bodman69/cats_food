@@ -30,7 +30,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public void saveAll(List<ProductEntity> productEntities){
+    public void saveAll(List<ProductEntity> productEntities) {
         productRepository.saveAll(productEntities);
     }
 
