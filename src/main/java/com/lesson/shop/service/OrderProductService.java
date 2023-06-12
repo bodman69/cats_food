@@ -1,6 +1,5 @@
 package com.lesson.shop.service;
 
-import com.lesson.shop.model.OrderProductModel;
 import com.lesson.shop.model.entity.OrderProductEntity;
 import com.lesson.shop.repository.OrderProductRepository;
 import lombok.RequiredArgsConstructor;

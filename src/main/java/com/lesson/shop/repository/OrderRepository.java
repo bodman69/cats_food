@@ -14,7 +14,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     @Query("select new com.lesson.shop.model.OrderModel(o.id, cl.name, o.date, o.totalPrice, o.orderStatus) " +
             "from OrderEntity o inner join ClientEntity cl on o.clientId = cl.id")
     List<OrderModel> findAllOrders();
+
     @Query("select new com.lesson.shop.model.OrderProductModel(p.name, op.count) " +
             "from ProductEntity p inner join OrderProductEntity op on p.id = op.productId where op.orderId = ?1")
-    List<OrderProductModel> getAllOrderProductById (Long id);
+    List<OrderProductModel> getAllOrderProductById(Long id);
 }

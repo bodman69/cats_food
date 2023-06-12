@@ -33,7 +33,7 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{id}")
-    public List<OrderProductModel> getOrderProduct(@PathVariable Long id){
+    public List<OrderProductModel> getOrderProduct(@PathVariable Long id) {
         return orderService.getAllOrderProductById(id);
     }
 

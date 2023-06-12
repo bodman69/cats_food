@@ -11,7 +11,6 @@ import com.lesson.shop.model.enums.OrderStatus;
 import com.lesson.shop.model.request.OrderProductRequest;
 import com.lesson.shop.model.request.OrderRequest;
 import com.lesson.shop.model.request.OrderUpdateRequest;
-import com.lesson.shop.repository.OrderProductRepository;
 import com.lesson.shop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class OrderService {
         return orderRepository.findAllOrders();
     }
 
-    public List <OrderProductModel> getAllOrderProductById(Long id){
+    public List<OrderProductModel> getAllOrderProductById(Long id) {
         return orderRepository.getAllOrderProductById(id);
     }
 
