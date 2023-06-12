@@ -1,6 +1,7 @@
 package com.lesson.shop.controller;
 
 import com.lesson.shop.model.OrderModel;
+import com.lesson.shop.model.OrderProductModel;
 import com.lesson.shop.model.request.OrderRequest;
 import com.lesson.shop.model.request.OrderUpdateRequest;
 import com.lesson.shop.service.OrderService;
@@ -29,6 +30,11 @@ public class OrderController {
     @GetMapping("/orders")
     public List<OrderModel> getAll() {
         return orderService.getAllOrders();
+    }
+
+    @GetMapping("/orders/{id}")
+    public List<OrderProductModel> getOrderProduct(@PathVariable Long id){
+        return orderService.getAllOrderProductById(id);
     }
 
     @DeleteMapping("/orders/{id}")

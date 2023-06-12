@@ -3,6 +3,7 @@ package com.lesson.shop.service;
 import com.lesson.shop.exception.BadRequestException;
 import com.lesson.shop.exception.EntityNotFoundException;
 import com.lesson.shop.model.OrderModel;
+import com.lesson.shop.model.OrderProductModel;
 import com.lesson.shop.model.entity.OrderEntity;
 import com.lesson.shop.model.entity.OrderProductEntity;
 import com.lesson.shop.model.entity.ProductEntity;
@@ -10,6 +11,7 @@ import com.lesson.shop.model.enums.OrderStatus;
 import com.lesson.shop.model.request.OrderProductRequest;
 import com.lesson.shop.model.request.OrderRequest;
 import com.lesson.shop.model.request.OrderUpdateRequest;
+import com.lesson.shop.repository.OrderProductRepository;
 import com.lesson.shop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,10 @@ public class OrderService {
 
     public List<OrderModel> getAllOrders() {
         return orderRepository.findAllOrders();
+    }
+
+    public List <OrderProductModel> getAllOrderProductById(Long id){
+        return orderRepository.getAllOrderProductById(id);
     }
 
     private void validateCreateRequest(OrderRequest request, List<ProductEntity> products) {
