@@ -4,6 +4,7 @@ import com.lesson.shop.exception.BadRequestException;
 import com.lesson.shop.exception.EntityNotFoundException;
 import com.lesson.shop.model.entity.ClientEntity;
 import com.lesson.shop.model.request.ClientRequest;
+import com.lesson.shop.model.response.ClientResponse;
 import com.lesson.shop.repository.ClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,13 +42,18 @@ public class ClientService {
         return clientRepository.findByNameAndPhoneNumber(name, phoneNumber);
     }
 
-    public void update(Long id, ClientRequest request) {
-        ClientEntity product = clientRepository.findById(id)
+    public ClientResponse update(Long id, ClientRequest request) {
+        ClientEntity client = clientRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Client with id " + id + " doesn't exist"));
 
-        product.setName(request.getName());
-        product.setPhoneNumber(request.getPhoneNumber());
-        clientRepository.save(product);
+        client.setName(request.getName());
+        client.setPhoneNumber(request.getPhoneNumber());
+        clientRepository.save(client);
+        return ClientResponse.builder()
+                .id(client.getId())
+                .name(client.getName())
+                .phoneNumber(client.getPhoneNumber())
+                .build();
     }
 
     public void deleteById(Long id) {

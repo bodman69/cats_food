@@ -48,5 +48,4 @@ public class OrderController {
         orderService.updateOrder(id, orderUpdateRequest);
         return ResponseEntity.noContent().build();
     }
-
 }

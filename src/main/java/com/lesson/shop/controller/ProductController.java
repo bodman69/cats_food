@@ -2,6 +2,7 @@ package com.lesson.shop.controller;
 
 import com.lesson.shop.model.entity.ProductEntity;
 import com.lesson.shop.model.request.ProductRequest;
+import com.lesson.shop.model.response.ProductResponse;
 import com.lesson.shop.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid ProductRequest request) {
-        productService.update(id, request);
-
-        return ResponseEntity.noContent().build();
+    public ProductResponse update(@PathVariable Long id, @RequestBody @Valid ProductRequest request) {
+        return productService.update(id, request);
     }
 }

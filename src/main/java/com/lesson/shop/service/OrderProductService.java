@@ -20,4 +20,8 @@ public class OrderProductService {
     public void deleteOrderProduct(Long id) {
         orderProductRepository.deleteByOrderId(id);
     }
+
+    public List<OrderProductEntity> findAllByOrderId(Long id){
+      return orderProductRepository.findAllByOrderId(id);
+    }
 }

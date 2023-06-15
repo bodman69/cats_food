@@ -55,5 +55,4 @@ public class ExceptionsHandler {
     private ErrorResponse buildResponse(String message, HttpServletRequest request, HttpStatus status) {
         return new ErrorResponse(status.value(), message, request.getRequestURI());
     }
-
 }

@@ -15,5 +15,4 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     List<ProductEntity> findByNameAndPrice(String name, BigDecimal price);
 
     boolean existsByName(String name);
-
 }

@@ -56,6 +56,70 @@ public class OrderService {
         return orderRepository.getAllOrderProductById(id);
     }
 
+    @Transactional
+    public void updateOrder(Long id, OrderUpdateRequest orderUpdateRequest) {
+        OrderEntity orderEntity = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order with id " + id + " doesn't exist"));
+
+        if (orderUpdateRequest.getOrderStatus() != null) {
+            orderEntity.setOrderStatus(orderUpdateRequest.getOrderStatus());
+            orderRepository.save(orderEntity);
+        }
+        if (orderUpdateRequest.getOrderProducts() != null) {
+
+            List<OrderProductEntity> orderProductEntities = orderProductService.findAllByOrderId(id);
+
+            List<ProductEntity> initialProductList = productService.findAllByIds(
+                    orderProductEntities.stream()
+                            .map(OrderProductEntity::getProductId)
+                            .collect(Collectors.toList())
+            );
+
+            updateOrderProductCount(orderProductEntities, initialProductList);
+
+            orderProductService.deleteOrderProduct(id);
+
+            List<ProductEntity> updatedProductList = productService.findAllByIds(
+                    orderUpdateRequest.getOrderProducts().stream()
+                            .map(OrderProductRequest::getProductId)
+                            .collect(Collectors.toList())
+            );
+
+            orderEntity.setTotalPrice(getTotalPrice(
+                    OrderRequest.builder()
+                            .clientId(orderEntity.getClientId())
+                            .products(orderUpdateRequest.getOrderProducts())
+                            .build(),
+                    updatedProductList
+            ));
+
+            orderRepository.save(orderEntity);
+
+            createOrderProducts(
+                    OrderRequest.builder()
+                            .clientId(orderEntity.getClientId())
+                            .products(orderUpdateRequest.getOrderProducts())
+                            .build(),
+                    orderEntity
+            );
+
+            updateProductCount(
+                    OrderRequest.builder()
+                            .clientId(orderEntity.getClientId())
+                            .products(orderUpdateRequest.getOrderProducts())
+                            .build(),
+                    updatedProductList
+            );
+        }
+    }
+
+    public void deleteById(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new EntityNotFoundException("Order with id " + id + " doesn't exist");
+        }
+        orderRepository.deleteById(id);
+    }
+
     private void validateCreateRequest(OrderRequest request, List<ProductEntity> products) {
         if (!clientService.existById(request.getClientId())) {
             throw new EntityNotFoundException("Client with id " + request.getClientId() + " doesn't exist");
@@ -79,23 +143,10 @@ public class OrderService {
     }
 
     private OrderEntity createOrder(OrderRequest request, List<ProductEntity> products) {
-        Map<Long, ProductEntity> productMap = products.stream()
-                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
-
-        BigDecimal totalPrice = new BigDecimal(0);
-
-        for (OrderProductRequest productRequest : request.getProducts()) {
-            totalPrice = totalPrice.add(
-                    BigDecimal.valueOf(productRequest.getCount()).multiply(
-                            productMap.get(productRequest.getProductId()).getPrice()
-                    )
-            );
-        }
-
         OrderEntity orderEntity = OrderEntity.builder()
                 .clientId(request.getClientId())
                 .date(new Date(Instant.now().toEpochMilli()))
-                .totalPrice(totalPrice)
+                .totalPrice(getTotalPrice(request, products))
                 .orderStatus(OrderStatus.NEW)
                 .build();
 
@@ -130,63 +181,34 @@ public class OrderService {
         productService.saveAll(productEntities);
     }
 
-    private void updateOrderProductCount(OrderUpdateRequest orderUpdateRequest, List<ProductEntity> products) {
+    private void updateOrderProductCount(List<OrderProductEntity> orderProducts, List<ProductEntity> products) {
         Map<Long, ProductEntity> productMap = products.stream()
                 .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-        for (OrderProductRequest productRequest : orderUpdateRequest.getOrderProducts()) {
-            productMap.get(productRequest.getProductId()).setCount(
-                    productMap.get(productRequest.getProductId()).getCount() + productRequest.getCount()
+        for (OrderProductEntity orderProduct :orderProducts) {
+            productMap.get(orderProduct.getProductId()).setCount(
+                    productMap.get(orderProduct.getProductId()).getCount() + orderProduct.getCount()
             );
         }
+
         List<ProductEntity> productEntities = new ArrayList<>(productMap.values());
         productService.saveAll(productEntities);
     }
 
-    @Transactional
-    public void updateOrder(Long id, OrderUpdateRequest orderUpdateRequest) {
-        OrderEntity orderEntity = orderRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Order with id " + id + " doesn't exist"));
+    private BigDecimal getTotalPrice (OrderRequest request, List<ProductEntity> products){
+        Map<Long, ProductEntity> productMap = products.stream()
+                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-        if (orderUpdateRequest.getOrderStatus() != null) {
-            orderEntity.setOrderStatus(orderUpdateRequest.getOrderStatus());
-            orderRepository.save(orderEntity);
-        }
-        if (orderUpdateRequest.getOrderProducts() != null) {
-            List<ProductEntity> productList = productService.findAllByIds(
-                    orderUpdateRequest.getOrderProducts().stream()
-                            .map(OrderProductRequest::getProductId)
-                            .collect(Collectors.toList())
-            );
+        BigDecimal totalPrice = new BigDecimal(0);
 
-            updateOrderProductCount(orderUpdateRequest, productList);
-
-            orderProductService.deleteOrderProduct(id);
-
-            orderEntity = orderRepository.save(orderEntity);
-            createOrderProducts(
-                    OrderRequest.builder()
-                            .clientId(orderEntity.getClientId())
-                            .products(orderUpdateRequest.getOrderProducts())
-                            .build(),
-                    orderEntity
-            );
-
-            updateProductCount(
-                    OrderRequest.builder()
-                            .clientId(orderEntity.getClientId())
-                            .products(orderUpdateRequest.getOrderProducts())
-                            .build(),
-                    productList
+        for (OrderProductRequest productRequest : request.getProducts()) {
+            totalPrice = totalPrice.add(
+                    BigDecimal.valueOf(productRequest.getCount()).multiply(
+                            productMap.get(productRequest.getProductId()).getPrice()
+                    )
             );
         }
-    }
-
-    public void deleteById(Long id) {
-        if (!orderRepository.existsById(id)) {
-            throw new EntityNotFoundException("Order with id " + id + " doesn't exist");
-        }
-        orderRepository.deleteById(id);
+        return totalPrice;
     }
 
 }

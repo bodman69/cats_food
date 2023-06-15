@@ -1,0 +1,11 @@
+spring:
+liquibase:
+  change-log:
+  classpath: db/changelog/changelog-master.xml
+datasource:
+  url=jdbc:postgresql://localhost:5432/cats_food_shop
+  username=postgres
+  password=admin
+
+
+

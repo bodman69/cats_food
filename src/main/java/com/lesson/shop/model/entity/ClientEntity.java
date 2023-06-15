@@ -21,5 +21,4 @@ public class ClientEntity {
     private String name;
     @Column(name = "phone_number")
     private String phoneNumber;
-
 }

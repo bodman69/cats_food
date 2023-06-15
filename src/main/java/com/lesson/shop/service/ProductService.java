@@ -3,6 +3,7 @@ package com.lesson.shop.service;
 import com.lesson.shop.exception.EntityNotFoundException;
 import com.lesson.shop.model.entity.ProductEntity;
 import com.lesson.shop.model.request.ProductRequest;
+import com.lesson.shop.model.response.ProductResponse;
 import com.lesson.shop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class ProductService {
     }
 
 
-    public void update(Long id, ProductRequest request) {
+    public ProductResponse update(Long id, ProductRequest request) {
         ProductEntity product = productRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id " + id + " doesn't exist"));
 
@@ -64,6 +65,12 @@ public class ProductService {
         product.setName(request.getName());
         product.setPrice(request.getPrice());
         productRepository.save(product);
+        return ProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .count(product.getCount())
+                .price(product.getPrice())
+                .build();
     }
 
     public List<ProductEntity> findAllByIds(List<Long> ids) {

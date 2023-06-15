@@ -22,15 +22,17 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "client_id")
     private Long clientId;
+
     @Column(name = "date")
     private Date date;
+
     @Column(name = "total_price")
     private BigDecimal totalPrice;
+
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
-
 }
